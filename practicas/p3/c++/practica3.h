@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <iomanip>
 #include <vector>
 
 using namespace std;
@@ -69,10 +70,15 @@ class Almacen{
         double size;
         double remainingSpace;
         vector<T*> lista;    //lista para almacenar cualquier cosa (T generico)
-
+        
+        double peso(){
+            return (size - remainingSpace);
+        }
 
     public:
-        Almacen(double _capacidad){
+        Almacen(double _capacidad){ 
+            /*capacidad ~= volumen del total de objetos que caben*/
+            /*peso del Almacen NO tiene limite, es la suma de los peso de los objetos que contniene*/
             size=_capacidad;
             remainingSpace=_capacidad;
         }
@@ -96,6 +102,7 @@ class Almacen{
         double espacioDisponible(){
             return remainingSpace;
         }
+
         //bool hayHueco(); //Freestyle
         
 };
@@ -105,37 +112,91 @@ class Almacen{
  * 
  */
 template <typename T>
-class Contenedor : public Nameable, public Almacen<T>{
-    //Como hereda de Almacen<T>, le decimos que solo va a guardar elementos de tipo Carga
+class Contenedor : public Carga, public Almacen<T>{
     protected:
-    /**/
+        /*nada*/
 
     public:
-        Contenedor(double _capacidad): Nameable("Contenedor"), Almacen<T>(_capacidad){
-
+        Contenedor(double _capacidad) : Carga("Carga Estandar", 0, 0), Almacen<T>(_capacidad){
+            /*nada*/
         }
 
         ~Contenedor(){ }
+
+
+        double peso() override {
+            return Almacen<T>::peso();
+        }
+
+        double volumen() override {
+            return Almacen<T>::capacidad();
+        }
+
+        string nombre() override {
+            return Carga::name;
+        }
+
+        string to_string() override{
+            stringstream stream;
+            
+            stream << std::setprecision(2) << "Contenedor [" << std::to_string(Almacen<T>::capacidad()) << " m3]" << " [" << std::to_string(Almacen<T>::peso()) << " kg]" << " de " <<  Carga::name << "\n";
+            for(auto& n : Almacen<T>::lista){
+                stream << "  " << n->to_string() << "\n";
+            }
+            return stream.str();
+
+            /* string info;
+            info = std::setprecision(2) + "Contenedor [" + std::to_string(Almacen<T>::capacidad()) + "m3]" + " [" + std::to_string(Almacen<T>::peso()) + " kg]" + " de "+  Carga::name + "\n";
+            for(auto& n : Almacen<T>::lista){
+                info += "  " + n->to_string() + "\n";
+            }
+            return info; */
+        }
+};
+
+
+
+class Camion : public Nameable, public Almacen<Carga>{
+    protected:
+        /*nada*/
+    public:
+        Camion(double _capacidad) : Nameable("Camión"), Almacen<Carga>(_capacidad){
+            /*nada*/
+        }
+
+        ~Camion(){ /**/ }
 
         string nombre() override {
             return name;
         }
 
         string to_string() override{
-            string info;
-            info = "Contenedor{nombre=" + Nameable::name + ", capacidad=" + std::to_string(Almacen<T>::size)+"}" + "\n";
-            for(auto& n : Almacen<T>::lista){
-                info += "\t\t" + n->to_string() + "\n";
+            stringstream stream;
+            
+            //TODO:el to_string() del camion, no saca el contenedor que es de tipo Carga
+            //solo saca los productos dentro del contenedor
+
+            stream << std::setprecision(2) << "Camion [" << std::to_string(Almacen<Carga>::capacidad()) << " m3]" << " [" << std::to_string(Almacen<Carga>::peso()) << " kg]" << "\n";
+            for(auto& n : Almacen<Carga>::lista){
+                stream << "  " << n->to_string() << "\n";
             }
-            return info;
+            return stream.str();
+            /* string info;
+            info = std::setprecision(2) + "Camion [" + std::to_string(Almacen<Carga>::capacidad()) + " m3]" + " [" + std::to_string(Almacen<Carga>::peso()) + " kg]" + "\n";
+            for(auto& n : Almacen<Carga>::lista){
+                info += "  " + n->to_string() + "\n";
+            }
+            return info; */
         }
-};
-
-
-
-class Camion {
 
 };
 
 //----------------------------------------------------------------------------------------------------------------------
 
+class SerVivo {
+
+};
+
+class Toxico {
+
+};

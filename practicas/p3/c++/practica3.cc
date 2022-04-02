@@ -44,7 +44,9 @@ string Producto::nombre(){
 }
 
 string Producto::to_string(){
-    return "Producto{nombre=" + Carga::name + ",peso=" + std::to_string(Carga::weight) + ",volumen=" + std::to_string(Carga::volume) + "}";
+    stringstream stream;
+    stream << std::setprecision(2) << Carga::name << " [" << std::to_string(Carga::volume) << " m3]" << " [" << std::to_string(Carga::weight) << " kg]";
+    return stream.str();
 }
 
 //------------------------------------------------------------------------------
