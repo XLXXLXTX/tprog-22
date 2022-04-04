@@ -29,38 +29,41 @@ int main(int argc, char const *argv[]){
     }
     
     */
-    //-------
-    Contenedor<Carga>	contenedor_estandar(4);
-    contenedor_estandar.guardar(longaniza_graus);
-	contenedor_estandar.guardar(adoquines_zaragoza); 
-
-    //cout << contenedor_estandar.to_string() << endl;
-
-    //-------
-
+   
     //-------
 
     Camion camion(3);
 
     //Producto apuntes_tepro("Apuntes de Tecnologia de Programacion",1,0.1);
-	if (!camion.guardar(apuntes_tepro))
-		cout << "Camion lleno con apuntes de tepro" << endl;
-
-	//Producto trenzas_almudevar("Trenzas de Almudevar",0.5,0.8);
-	if (!camion.guardar(trenzas_almudevar))
-		cout << "Camion lleno con Trenzas de Almudevar" << endl;
-
+    if (!camion.guardar(apuntes_tepro)){
+      cout << "Camion lleno con apuntes de tepro" << endl;
+    }
+    //Producto trenzas_almudevar("Trenzas de Almudevar",0.5,0.8);
+    if (!camion.guardar(trenzas_almudevar)){
+      cout << "Camion lleno con Trenzas de Almudevar" << endl;
+    }
+    
+    cout << "***Camion normal:***" << endl;
     cout << camion.to_string() << endl;
 
-    return 0;
-
+    
+    //------------------------------
     Camion camion_de_contenedores(10);
+
+    Contenedor<Carga>	contenedor_estandar(4);
+    contenedor_estandar.guardar(longaniza_graus);
+	  contenedor_estandar.guardar(adoquines_zaragoza); 
+
+    //cout << contenedor_estandar.to_string() << endl;
+
     if(!camion_de_contenedores.guardar(contenedor_estandar)){
 		cout << "Camion lleno NO CABE EL CONTENEDOR" << endl;
     }
 
+    cout << "***Camion de contenedores:***" << endl;
     cout << camion_de_contenedores.to_string() << endl;
 
+    //------------------------------
     
 
 }

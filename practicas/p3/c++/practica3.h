@@ -67,12 +67,13 @@ template <typename T>
 class Almacen{ 
     protected:
         //vector de cosas genericas a guardar
+        double totalWeight;
         double size;
         double remainingSpace;
         vector<T*> lista;    //lista para almacenar cualquier cosa (T generico)
         
         double peso(){
-            return (size - remainingSpace);
+            return totalWeight;
         }
 
     public:
@@ -81,6 +82,7 @@ class Almacen{
             /*peso del Almacen NO tiene limite, es la suma de los peso de los objetos que contniene*/
             size=_capacidad;
             remainingSpace=_capacidad;
+            totalWeight=0;
         }
 
         ~Almacen(){/*nada*/}
@@ -89,6 +91,7 @@ class Almacen{
         bool guardar(T& elemento){
             if(espacioDisponible() >= elemento.volumen()){
                 remainingSpace = espacioDisponible() - elemento.volumen();
+                totalWeight += elemento.peso();
                 this->lista.push_back(&elemento);
                 return true;
             }else{
@@ -139,6 +142,8 @@ class Contenedor : public Carga, public Almacen<T>{
         string to_string() override{
             stringstream stream;
             
+            //TODO: arreglar el formato del to_string() si el cotenedor esta dentro de un camion.
+
             stream << std::setprecision(2) << "Contenedor [" << std::to_string(Almacen<T>::capacidad()) << " m3]" << " [" << std::to_string(Almacen<T>::peso()) << " kg]" << " de " <<  Carga::name << "\n";
             for(auto& n : Almacen<T>::lista){
                 stream << "  " << n->to_string() << "\n";
@@ -173,13 +178,11 @@ class Camion : public Nameable, public Almacen<Carga>{
         string to_string() override{
             stringstream stream;
             
-            //TODO:el to_string() del camion, no saca el contenedor que es de tipo Carga
-            //solo saca los productos dentro del contenedor
-
             stream << std::setprecision(2) << "Camion [" << std::to_string(Almacen<Carga>::capacidad()) << " m3]" << " [" << std::to_string(Almacen<Carga>::peso()) << " kg]" << "\n";
             for(auto& n : Almacen<Carga>::lista){
                 stream << "  " << n->to_string() << "\n";
             }
+            
             return stream.str();
             /* string info;
             info = std::setprecision(2) + "Camion [" + std::to_string(Almacen<Carga>::capacidad()) + " m3]" + " [" + std::to_string(Almacen<Carga>::peso()) + " kg]" + "\n";
