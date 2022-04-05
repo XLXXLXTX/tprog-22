@@ -13,7 +13,7 @@ class Nameable {
         Nameable(const string& nombre);
         ~Nameable();
         virtual string nombre() = 0;
-        virtual string to_string() =0;
+        virtual string to_string() = 0;
 };
 
 
@@ -33,7 +33,7 @@ class Carga {
         virtual double peso() = 0;
         virtual double volumen() = 0;
         virtual string nombre() = 0;
-        virtual string to_string() = 0;
+        virtual string to_string(const string ident = "  " ) = 0;
 };
 
 /**
@@ -53,7 +53,7 @@ class Producto : public Carga{
         double peso() override;
         double volumen() override;
         string nombre() override;
-        string to_string() override;
+        string to_string(const string ident="") override;
 
 };
 
@@ -139,14 +139,14 @@ class Contenedor : public Carga, public Almacen<T>{
             return Carga::name;
         }
 
-        string to_string() override{
+        string to_string(const string ident = "") override{
             stringstream stream;
             
             //TODO: arreglar el formato del to_string() si el cotenedor esta dentro de un camion.
 
-            stream << std::setprecision(2) << "Contenedor [" << std::to_string(Almacen<T>::capacidad()) << " m3]" << " [" << std::to_string(Almacen<T>::peso()) << " kg]" << " de " <<  Carga::name << "\n";
+            stream << std::setprecision(2) << ident << "Contenedor [" << std::to_string(Almacen<T>::capacidad()) << " m3]" << " [" << std::to_string(Almacen<T>::peso()) << " kg]" << " de " <<  Carga::name << "\n";
             for(auto& n : Almacen<T>::lista){
-                stream << "  " << n->to_string() << "\n";
+                stream << n->to_string("  " + ident) << "\n";
             }
             return stream.str();
 
@@ -180,7 +180,7 @@ class Camion : public Nameable, public Almacen<Carga>{
             
             stream << std::setprecision(2) << "Camion [" << std::to_string(Almacen<Carga>::capacidad()) << " m3]" << " [" << std::to_string(Almacen<Carga>::peso()) << " kg]" << "\n";
             for(auto& n : Almacen<Carga>::lista){
-                stream << "  " << n->to_string() << "\n";
+                stream << n->to_string("  ") << "\n";
             }
             
             return stream.str();

@@ -53,8 +53,11 @@ int main(int argc, char const *argv[]){
     Contenedor<Carga>	contenedor_estandar(4);
     contenedor_estandar.guardar(longaniza_graus);
 	  contenedor_estandar.guardar(adoquines_zaragoza); 
+    Producto pablol("Fregona de pablol",0.9,3.0);
 
-    //cout << contenedor_estandar.to_string() << endl;
+    cout << contenedor_estandar.to_string() << endl;
+    
+    camion_de_contenedores.guardar(pablol);
 
     if(!camion_de_contenedores.guardar(contenedor_estandar)){
 		cout << "Camion lleno NO CABE EL CONTENEDOR" << endl;
