@@ -120,7 +120,7 @@ class Contenedor : public Carga, public Almacen<T>{
         /*nada*/
 
     public:
-        Contenedor(double _capacidad) : Carga("Carga Estandar", 0, 0), Almacen<T>(_capacidad){
+        Contenedor(double _capacidad) : Carga("Carga Estandar", 0 , 0), Almacen<T>(_capacidad){
             /*nada*/
         }
 
@@ -128,11 +128,11 @@ class Contenedor : public Carga, public Almacen<T>{
 
 
         double peso() override {
-            return Almacen<T>::peso();
+            return Almacen<Carga>::peso();
         }
 
         double volumen() override {
-            return Almacen<T>::capacidad();
+            return Almacen<Carga>::capacidad();
         }
 
         string nombre() override {
@@ -141,21 +141,13 @@ class Contenedor : public Carga, public Almacen<T>{
 
         string to_string(const string ident = "") override{
             stringstream stream;
-            
-            //TODO: arreglar el formato del to_string() si el cotenedor esta dentro de un camion.
 
-            stream << std::setprecision(2) << ident << "Contenedor [" << std::to_string(Almacen<T>::capacidad()) << " m3]" << " [" << std::to_string(Almacen<T>::peso()) << " kg]" << " de " <<  Carga::name << "\n";
-            for(auto& n : Almacen<T>::lista){
+            stream << std::fixed << std::setprecision(2) << ident << "Contenedor [" << std::to_string(Almacen<Carga>::capacidad()) << " m3]" << " [" << std::to_string(Almacen<Carga>::peso()) << " kg]" << " de " <<  Carga::name << "\n";
+            for(auto& n : Almacen<Carga>::lista){
                 stream << n->to_string("  " + ident) << "\n";
             }
+            
             return stream.str();
-
-            /* string info;
-            info = std::setprecision(2) + "Contenedor [" + std::to_string(Almacen<T>::capacidad()) + "m3]" + " [" + std::to_string(Almacen<T>::peso()) + " kg]" + " de "+  Carga::name + "\n";
-            for(auto& n : Almacen<T>::lista){
-                info += "  " + n->to_string() + "\n";
-            }
-            return info; */
         }
 };
 
@@ -178,28 +170,142 @@ class Camion : public Nameable, public Almacen<Carga>{
         string to_string() override{
             stringstream stream;
             
-            stream << std::setprecision(2) << "Camion [" << std::to_string(Almacen<Carga>::capacidad()) << " m3]" << " [" << std::to_string(Almacen<Carga>::peso()) << " kg]" << "\n";
+            stream << std::fixed << std::setprecision(2) << "Camion [" << std::to_string(Almacen<Carga>::capacidad()) << " m3]" << " [" << std::to_string(Almacen<Carga>::peso()) << " kg]" << "\n";
             for(auto& n : Almacen<Carga>::lista){
                 stream << n->to_string("  ") << "\n";
             }
             
             return stream.str();
-            /* string info;
-            info = std::setprecision(2) + "Camion [" + std::to_string(Almacen<Carga>::capacidad()) + " m3]" + " [" + std::to_string(Almacen<Carga>::peso()) + " kg]" + "\n";
-            for(auto& n : Almacen<Carga>::lista){
-                info += "  " + n->to_string() + "\n";
-            }
-            return info; */
+
         }
 
+        friend ostream& operator<<(ostream& f, Camion& c){
+            f << c.to_string();
+            return f;
+        }
 };
 
 //----------------------------------------------------------------------------------------------------------------------
 
-class SerVivo {
+class CargaEspecial : public Carga{
+    private:
+    /*nada*/
+
+    public:
+        CargaEspecial(const string& _name, double _volume, double _weight) : Carga(_name, _volume, _weight){
+
+        }
+
+        ~CargaEspecial(){ /*nada*/ }
+        
+        //Heredadas de la clase Carga
+        double peso(){
+            return Carga::weight;
+        }
+
+        double volumen(){
+            return Carga::volume;
+        }
+
+        string nombre(){
+            return Carga::name;
+        }
+        string to_string(const string ident = "  " ){
+            stringstream stream;
+            stream << std::fixed << std::setprecision(2) << ident << Carga::name << " [" << std::to_string(Carga::volume) << " m3]" << " [" << std::to_string(Carga::weight) << " kg]";
+            return stream.str();
+        }
 
 };
 
-class Toxico {
 
+class SerVivo : public CargaEspecial {
+    /*Constructor*/
+    private:
+    /*nada*/
+
+    public:
+        SerVivo(const string& _name, double _volume, double _weight);
+        ~SerVivo();
+};
+
+class Toxico : public CargaEspecial {
+    /*Constructor*/
+    private:
+    /*nada*/
+
+    public:
+        Toxico(const string& _name, double _volume, double _weight);
+        ~Toxico();
+};
+
+template <> 
+class Contenedor<SerVivo> : public CargaEspecial, public Almacen<SerVivo> {
+
+    private:
+    /**/
+    public:
+        Contenedor(double _capacidad) : CargaEspecial("Seres Vivos", 0, 0 ), Almacen<SerVivo>(_capacidad){
+
+        }
+
+        double peso() override {
+            return Almacen<SerVivo>::peso();
+        }
+
+        double volumen() override {
+            return Almacen<SerVivo>::capacidad();
+        }
+
+        string nombre() override {
+            return CargaEspecial::name;
+        }
+
+
+        string to_string(const string ident = "") override{
+            stringstream stream;
+
+            stream << std::fixed << std::setprecision(2) << ident << "Contenedor [" << std::to_string(Almacen<SerVivo>::capacidad()) << " m3]" << " [" << std::to_string(Almacen<SerVivo>::peso()) << " kg]" << " de " <<  Carga::name << "\n";
+            for(auto& n : Almacen<SerVivo>::lista){
+                stream << n->to_string("  " + ident) << "\n";
+            }
+            
+            return stream.str();
+        }
+
+};
+
+template <> 
+class Contenedor<Toxico> : public CargaEspecial, public Almacen<Toxico> {
+
+    private:
+    /**/
+    public:
+        Contenedor(double _capacidad) : CargaEspecial("Productos Toxicos", 0, 0 ), Almacen<Toxico>(_capacidad){
+
+        }
+        
+        double peso() override {
+            return Almacen<Toxico>::peso();
+        }
+
+        double volumen() override {
+            return Almacen<Toxico>::capacidad();
+        }
+
+        string nombre() override {
+            return Carga::name;
+        }
+
+
+        string to_string(const string ident = "") override{
+            stringstream stream;
+
+            stream << std::fixed << std::setprecision(2) << ident << "Contenedor [" << std::to_string(Almacen<Toxico>::capacidad()) << " m3]" << " [" << std::to_string(Almacen<Toxico>::peso()) << " kg]" << " de " <<  Carga::name << "\n";
+            for(auto& n : Almacen<Toxico>::lista){
+                stream << n->to_string("  " + ident) << "\n";
+            }
+            
+            return stream.str();
+        }
 };

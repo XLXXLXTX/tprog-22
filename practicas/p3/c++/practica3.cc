@@ -49,6 +49,27 @@ string Producto::to_string(const string ident) {
     return stream.str();
 }
 
+SerVivo::SerVivo(const string& _name, double _volume, double _weight) : CargaEspecial( _name, _volume, _weight){
+    /*nada*/
+
+}
+
+SerVivo::~SerVivo(){
+    /*nada*/
+}
+
+Toxico::Toxico(const string& _name, double _volume, double _weight) : CargaEspecial( _name, _volume, _weight){
+    /*nada*/
+
+}
+
+Toxico::~Toxico(){
+    /*nada*/
+}
+
+
+
+
 //------------------------------------------------------------------------------
 // Clase Almacen
 //------------------------------------------------------------------------------
