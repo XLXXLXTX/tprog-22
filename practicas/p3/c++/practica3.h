@@ -12,7 +12,9 @@ class Nameable {
     public:
         Nameable(const string& nombre);
         ~Nameable();
-        virtual string nombre() = 0;
+        virtual string nombre(){
+            return name;
+        }
         virtual string to_string() = 0;
 };
 
@@ -23,17 +25,23 @@ class Nameable {
  */
 class Carga {
     protected:
-        double weight;
-        double volume;
         string name;
-    
+        double volume;
+        double weight;
+
     public:
         Carga(const string& _name, double _volume, double _weight);
         ~Carga();
         virtual double peso() = 0;
-        virtual double volumen() = 0;
+        virtual double volumen(){
+            return volume;
+        }
         virtual string nombre() = 0;
-        virtual string to_string(const string ident = "  " ) = 0;
+        virtual string to_string(const string ident = "  " ){
+            stringstream stream;
+            stream << ident << Carga::name << " [" << std::fixed << std::setprecision(1) << Carga::volume << " m3]" << " [" << std::fixed << std::setprecision(1) << Carga::weight << " kg]";
+            return stream.str();
+        }
 };
 
 /**
@@ -53,7 +61,7 @@ class Producto : public Carga{
         double peso() override;
         double volumen() override;
         string nombre() override;
-        string to_string(const string ident="") override;
+        //string to_string(const string ident="") override;
 
 };
 
@@ -102,16 +110,16 @@ class Almacen{
         double capacidad(){
             return size;
         }
+        
         double espacioDisponible(){
             return remainingSpace;
         }
-
-        //bool hayHueco(); //Freestyle
         
 };
 
 /**
- * @brief representará un contenedor con su correspondiente capacidad (que equivale a su volumen). Dicho valor se le pasará en su constructor
+ * @brief representará un contenedor con su correspondiente capacidad (que equivale a su volumen). 
+ * Dicho valor se le pasará en su constructor.
  * 
  */
 template <typename T>
@@ -161,11 +169,7 @@ class Camion : public Nameable, public Almacen<Carga>{
             /*nada*/
         }
 
-        ~Camion(){ /**/ }
-
-        string nombre() override {
-            return name;
-        }
+        ~Camion(){ /*nada*/ }
 
         string to_string() override{
             stringstream stream;
@@ -176,7 +180,6 @@ class Camion : public Nameable, public Almacen<Carga>{
             }
             
             return stream.str();
-
         }
 
         friend ostream& operator<<(ostream& f, Camion& c){
@@ -193,7 +196,7 @@ class CargaEspecial : public Carga{
 
     public:
         CargaEspecial(const string& _name, double _volume, double _weight) : Carga(_name, _volume, _weight){
-
+            /*nada*/
         }
 
         ~CargaEspecial(){ /*nada*/ }
@@ -203,18 +206,14 @@ class CargaEspecial : public Carga{
             return Carga::weight;
         }
 
-        double volumen(){
-            return Carga::volume;
-        } 
-
         string nombre(){
             return Carga::name;
         }
-        string to_string(const string ident = "  " ){
+/*         string to_string(const string ident = "  " ){
             stringstream stream;
             stream << ident << Carga::name << " [" << std::fixed << std::setprecision(1) << Carga::volume << " m3]" << " [" << std::fixed << std::setprecision(1) << Carga::weight << " kg]";
             return stream.str();
-        }
+        } */
 
 };
 
@@ -296,7 +295,6 @@ class Contenedor<Toxico> : public CargaEspecial, public Almacen<Toxico> {
         string nombre() override {
             return Carga::name;
         }
-
 
         string to_string(const string ident = "") override{
             stringstream stream;

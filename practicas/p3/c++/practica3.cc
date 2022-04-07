@@ -43,11 +43,11 @@ string Producto::nombre(){
     return Carga::name;
 }
 
-string Producto::to_string(const string ident) {
+/* string Producto::to_string(const string ident) {
     stringstream stream;
     stream << ident << Carga::name << " [" << std::setprecision(1) << Carga::volume << " m3]" << " [" << std::setprecision(2) << Carga::weight << " kg]";
     return stream.str();
-}
+} */
 
 SerVivo::SerVivo(const string& _name, double _volume, double _weight) : CargaEspecial( _name, _volume, _weight){
     /*nada*/
@@ -67,76 +67,3 @@ Toxico::~Toxico(){
     /*nada*/
 }
 
-
-
-
-//------------------------------------------------------------------------------
-// Clase Almacen
-//------------------------------------------------------------------------------
-
-/*
-
-template <typename T>
-Almacen<T>::Almacen(double _capacidad){
-    size=_capacidad;
-    remainingSpace=_capacidad;
-}
-
-template <typename T>
-Almacen<T>::~Almacen(){}
-
-template <typename T>
-bool Almacen<T>::guardar(T& elemento){
-    
-    if(Almacen::espacioDisponible() >= elemento.volumen()){
-        Almacen::remainingSpace = Almacen::espacioDisponible() - elemento.volumen();
-        Almacen::lista.push_back(elemento);
-        return true;
-    }else{
-        return false;
-    }
-}
-
-template <typename T>
-double Almacen<T>::capacidad(){
-    return Almacen::size;
-}
-
-template <typename T>
-double Almacen<T>::espacioDisponible(){
-    return Almacen::remainingSpace;
-}
-
-*/
-
-//------------------------------------------------------------------------------
-// Clase Contenedor
-//------------------------------------------------------------------------------
-
-/*
-
-template <typename T>
-Contenedor<T>::Contenedor(double _capacidad) 
-           : Nameable("Contenedor"), Almacen<T>(_capacidad){
-               
-}
-
-template <typename T>
-Contenedor<T>::~Contenedor(){ }
-
-template <typename T>
-string Contenedor<T>::nombre(){
-    return Nameable::name;
-}
-
-template <typename T>
-string Contenedor<T>::to_string(){
-    string info;
-    info = "Contenedor{nombre=" + Nameable::name + ", capacidad=" + std::to_string(Almacen<T>::size)+"}" + "\n";
-    for(auto n : Almacen<T>::lista){
-        info += "\t\t" + n.to_string() + "\n";
-    }
-    return info;
-}
-
-*/
