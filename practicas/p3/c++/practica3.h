@@ -142,7 +142,7 @@ class Contenedor : public Carga, public Almacen<T>{
         string to_string(const string ident = "") override{
             stringstream stream;
 
-            stream << std::fixed << std::setprecision(2) << ident << "Contenedor [" << std::to_string(Almacen<Carga>::capacidad()) << " m3]" << " [" << std::to_string(Almacen<Carga>::peso()) << " kg]" << " de " <<  Carga::name << "\n";
+            stream << ident << "Contenedor [" << std::fixed << std::setprecision(1) << Almacen<Carga>::capacidad() << " m3]" << " [" << std::fixed << std::setprecision(1) << Almacen<Carga>::peso() << " kg]" << " de " <<  Carga::name << "\n";
             for(auto& n : Almacen<Carga>::lista){
                 stream << n->to_string("  " + ident) << "\n";
             }
@@ -170,7 +170,7 @@ class Camion : public Nameable, public Almacen<Carga>{
         string to_string() override{
             stringstream stream;
             
-            stream << std::fixed << std::setprecision(2) << "Camion [" << std::to_string(Almacen<Carga>::capacidad()) << " m3]" << " [" << std::to_string(Almacen<Carga>::peso()) << " kg]" << "\n";
+            stream << "Camion [" <<  std::fixed << std::setprecision(1) << Almacen<Carga>::capacidad() << " m3]" << " [" << std::setprecision(1) << Almacen<Carga>::peso() << " kg]" << "\n";
             for(auto& n : Almacen<Carga>::lista){
                 stream << n->to_string("  ") << "\n";
             }
@@ -205,14 +205,14 @@ class CargaEspecial : public Carga{
 
         double volumen(){
             return Carga::volume;
-        }
+        } 
 
         string nombre(){
             return Carga::name;
         }
         string to_string(const string ident = "  " ){
             stringstream stream;
-            stream << std::fixed << std::setprecision(2) << ident << Carga::name << " [" << std::to_string(Carga::volume) << " m3]" << " [" << std::to_string(Carga::weight) << " kg]";
+            stream << ident << Carga::name << " [" << std::fixed << std::setprecision(1) << Carga::volume << " m3]" << " [" << std::fixed << std::setprecision(1) << Carga::weight << " kg]";
             return stream.str();
         }
 
@@ -265,7 +265,7 @@ class Contenedor<SerVivo> : public CargaEspecial, public Almacen<SerVivo> {
         string to_string(const string ident = "") override{
             stringstream stream;
 
-            stream << std::fixed << std::setprecision(2) << ident << "Contenedor [" << std::to_string(Almacen<SerVivo>::capacidad()) << " m3]" << " [" << std::to_string(Almacen<SerVivo>::peso()) << " kg]" << " de " <<  Carga::name << "\n";
+            stream << ident << "Contenedor [" << std::fixed << std::setprecision(1) <<  Almacen<SerVivo>::capacidad() << " m3]" << " [" << std::fixed << std::setprecision(1) << Almacen<SerVivo>::peso() << " kg]" << " de " <<  Carga::name << "\n";
             for(auto& n : Almacen<SerVivo>::lista){
                 stream << n->to_string("  " + ident) << "\n";
             }
@@ -301,7 +301,7 @@ class Contenedor<Toxico> : public CargaEspecial, public Almacen<Toxico> {
         string to_string(const string ident = "") override{
             stringstream stream;
 
-            stream << std::fixed << std::setprecision(2) << ident << "Contenedor [" << std::to_string(Almacen<Toxico>::capacidad()) << " m3]" << " [" << std::to_string(Almacen<Toxico>::peso()) << " kg]" << " de " <<  Carga::name << "\n";
+            stream << ident << "Contenedor [" << std::fixed << std::setprecision(1) << Almacen<Toxico>::capacidad() << " m3]" << " [" << std::fixed << std::setprecision(1) << Almacen<Toxico>::peso() << " kg]" << " de " <<  Carga::name << "\n";
             for(auto& n : Almacen<Toxico>::lista){
                 stream << n->to_string("  " + ident) << "\n";
             }
