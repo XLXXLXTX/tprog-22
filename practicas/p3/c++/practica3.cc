@@ -31,24 +31,9 @@ Producto::Producto(const string& _name, double _volume, double _weigth)
 
 Producto::~Producto(){/*nada*/}
 
-double Producto::peso(){
-    return Carga::weight;
-}
-
-double Producto::volumen(){
-    return Carga::volume;
-}
-
-string Producto::nombre(){
-    return Carga::name;
-}
-
-/* string Producto::to_string(const string ident) {
-    stringstream stream;
-    stream << ident << Carga::name << " [" << std::setprecision(1) << Carga::volume << " m3]" << " [" << std::setprecision(2) << Carga::weight << " kg]";
-    return stream.str();
-} */
-
+//------------------------------------------------------------------------------
+// Clase SerVivo
+//------------------------------------------------------------------------------
 SerVivo::SerVivo(const string& _name, double _volume, double _weight) : CargaEspecial( _name, _volume, _weight){
     /*nada*/
 
@@ -58,6 +43,9 @@ SerVivo::~SerVivo(){
     /*nada*/
 }
 
+//------------------------------------------------------------------------------
+// Clase Toxico
+//------------------------------------------------------------------------------
 Toxico::Toxico(const string& _name, double _volume, double _weight) : CargaEspecial( _name, _volume, _weight){
     /*nada*/
 

@@ -5,6 +5,10 @@
 
 using namespace std;
 
+/**
+ * @brief Clase que representa el poder darle un nombre a una clase que no proviene de "Carga" y pueda tener un metodo to_string (camión).
+ * 
+ */
 class Nameable {
     protected:
         string name;
@@ -18,9 +22,10 @@ class Nameable {
         virtual string to_string() = 0;
 };
 
+//----------------------------------------------------------------------------------------------------------------------
 
 /**
- * @brief representará cualquier carga (producto o contenedores) que se pueden transportar dentro de un "Almacen" (contenedor o camión)
+ * @brief representará cualquier carga (producto o contenedores) que se pueden transportar dentro de un "Almacen" (contenedor o camión).
  * 
  */
 class Carga {
@@ -32,11 +37,19 @@ class Carga {
     public:
         Carga(const string& _name, double _volume, double _weight);
         ~Carga();
-        virtual double peso() = 0;
+
+        virtual double peso(){
+            return weight;
+        }
+
         virtual double volumen(){
             return volume;
         }
-        virtual string nombre() = 0;
+
+        virtual string nombre(){
+            return name;
+        }
+
         virtual string to_string(const string ident = "  " ){
             stringstream stream;
             stream << ident << Carga::name << " [" << std::fixed << std::setprecision(1) << Carga::volume << " m3]" << " [" << std::fixed << std::setprecision(1) << Carga::weight << " kg]";
@@ -44,25 +57,19 @@ class Carga {
         }
 };
 
+//----------------------------------------------------------------------------------------------------------------------
+
 /**
  * @brief representará un productomediante un nombre identificativo (una cadena de texto), su volumen, y su peso.
  * 
  */
 class Producto : public Carga{
-    /*Constructor*/
     private:
     /*nada*/
 
     public:
         Producto(const string& _name, double _volume, double _weight);
         ~Producto();
-        
-        //Heredadas de la clase Carga
-        double peso() override;
-        double volumen() override;
-        string nombre() override;
-        //string to_string(const string ident="") override;
-
 };
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -74,7 +81,7 @@ class Producto : public Carga{
 template <typename T>
 class Almacen{ 
     protected:
-        //vector de cosas genericas a guardar
+        //Campos utiles para el tratamiento de objetos que heredan el poder almacenar objetos.
         double totalWeight;
         double size;
         double remainingSpace;
@@ -117,6 +124,8 @@ class Almacen{
         
 };
 
+//----------------------------------------------------------------------------------------------------------------------
+
 /**
  * @brief representará un contenedor con su correspondiente capacidad (que equivale a su volumen). 
  * Dicho valor se le pasará en su constructor.
@@ -143,10 +152,6 @@ class Contenedor : public Carga, public Almacen<T>{
             return Almacen<Carga>::capacidad();
         }
 
-        string nombre() override {
-            return Carga::name;
-        }
-
         string to_string(const string ident = "") override{
             stringstream stream;
 
@@ -159,8 +164,12 @@ class Contenedor : public Carga, public Almacen<T>{
         }
 };
 
+//----------------------------------------------------------------------------------------------------------------------
 
-
+/**
+ * @brief Clase Camion para poder guardar objetos (hereda de Almacen) y que tenga la etiqueta de que es un camion (hereda de Nameable)
+ * 
+ */
 class Camion : public Nameable, public Almacen<Carga>{
     protected:
         /*nada*/
@@ -182,6 +191,13 @@ class Camion : public Nameable, public Almacen<Carga>{
             return stream.str();
         }
 
+        /**
+         * @brief Redefinicion del operador << para poder escribir el obj sin llamar a la funcion to_string()
+         * 
+         * @param f ostream
+         * @param c camion
+         * @return ostream& 
+         */
         friend ostream& operator<<(ostream& f, Camion& c){
             f << c.to_string();
             return f;
@@ -190,6 +206,10 @@ class Camion : public Nameable, public Almacen<Carga>{
 
 //----------------------------------------------------------------------------------------------------------------------
 
+/**
+ * @brief Clase CargaEspecial, hereda de Carga (la clase padre de todas las cargas)
+ * 
+ */
 class CargaEspecial : public Carga{
     private:
     /*nada*/
@@ -200,26 +220,16 @@ class CargaEspecial : public Carga{
         }
 
         ~CargaEspecial(){ /*nada*/ }
-        
-        //Heredadas de la clase Carga
-        double peso(){
-            return Carga::weight;
-        }
-
-        string nombre(){
-            return Carga::name;
-        }
-/*         string to_string(const string ident = "  " ){
-            stringstream stream;
-            stream << ident << Carga::name << " [" << std::fixed << std::setprecision(1) << Carga::volume << " m3]" << " [" << std::fixed << std::setprecision(1) << Carga::weight << " kg]";
-            return stream.str();
-        } */
 
 };
 
+//----------------------------------------------------------------------------------------------------------------------
 
+/**
+ * @brief clase SerVivo que viene de una clase intermedia CargaEspecial para diferenciarla de la clase Producto (Carga estandar)
+ * 
+ */
 class SerVivo : public CargaEspecial {
-    /*Constructor*/
     private:
     /*nada*/
 
@@ -228,8 +238,9 @@ class SerVivo : public CargaEspecial {
         ~SerVivo();
 };
 
+//----------------------------------------------------------------------------------------------------------------------
+
 class Toxico : public CargaEspecial {
-    /*Constructor*/
     private:
     /*nada*/
 
@@ -238,14 +249,22 @@ class Toxico : public CargaEspecial {
         ~Toxico();
 };
 
+//----------------------------------------------------------------------------------------------------------------------
+
+/**
+ * @brief Clase Contenedor<SerVivo> para poder darle la etiqueta de que es un "Contenedor de Seres Vivos" al ser creado un obj
+ *(Tiene las mismas caracteristicas que un contenedor pero solo puede contener obj de la clase SerVivo)
+ * @tparam  
+ */
 template <> 
 class Contenedor<SerVivo> : public CargaEspecial, public Almacen<SerVivo> {
 
     private:
-    /**/
+    /*nada*/
+
     public:
         Contenedor(double _capacidad) : CargaEspecial("Seres Vivos", 0, 0 ), Almacen<SerVivo>(_capacidad){
-
+            /*nada*/
         }
 
         double peso() override {
@@ -255,11 +274,6 @@ class Contenedor<SerVivo> : public CargaEspecial, public Almacen<SerVivo> {
         double volumen() override {
             return Almacen<SerVivo>::capacidad();
         }
-
-        string nombre() override {
-            return CargaEspecial::name;
-        }
-
 
         string to_string(const string ident = "") override{
             stringstream stream;
@@ -274,14 +288,22 @@ class Contenedor<SerVivo> : public CargaEspecial, public Almacen<SerVivo> {
 
 };
 
+//----------------------------------------------------------------------------------------------------------------------
+
+/**
+ * @brief Clase Contenedor<Toxico> para poder darle la etiqueta de que es un "Contenedor de Productos Toxicos" al ser creado un obj
+ *(Tiene las mismas caracteristicas que un contenedor pero solo puede contener obj de la clase Toxico)
+ * @tparam  
+ */
 template <> 
 class Contenedor<Toxico> : public CargaEspecial, public Almacen<Toxico> {
 
     private:
-    /**/
+    /*nada*/
+
     public:
         Contenedor(double _capacidad) : CargaEspecial("Productos Toxicos", 0, 0 ), Almacen<Toxico>(_capacidad){
-
+            /*nada*/
         }
         
         double peso() override {
@@ -290,10 +312,6 @@ class Contenedor<Toxico> : public CargaEspecial, public Almacen<Toxico> {
 
         double volumen() override {
             return Almacen<Toxico>::capacidad();
-        }
-
-        string nombre() override {
-            return Carga::name;
         }
 
         string to_string(const string ident = "") override{
