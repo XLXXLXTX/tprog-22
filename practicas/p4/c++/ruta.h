@@ -206,7 +206,9 @@ class Ruta {
         
         void rm(string _path){
             //TODO: recorrer todo el vector de directorios para ver cuales coinciden con _path ???
-            
+            // _path = "/dir1/dir2/fichero1.txt"
+            // / dir1 dir2 fichero.txt
+            // Ruta("/")           
             Directorio* aux;
             aux = 
             delete(aux);
