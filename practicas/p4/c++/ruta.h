@@ -17,11 +17,12 @@ using namespace std;
 class Elemento {
     protected:
         string name;
+        string path;
         int sizeInBytes;
 
     public:
         //Constructor
-        Elemento(const string& _name, int _sizeInBytes) : name(_name), sizeInBytes(_sizeInBytes){
+        Elemento(const string& _name, const string& _path, int _sizeInBytes) : name(_name), path(_path), sizeInBytes(_sizeInBytes){
             /*nada*/
         }
 
@@ -33,6 +34,10 @@ class Elemento {
         //Funcion virtual para que cada clase hijo la redefina si es necesario 
         virtual int tamanio(){
             return sizeInBytes;
+        }
+
+        virtual string pathFile(){
+            return path;
         }
 };
 
@@ -50,7 +55,9 @@ class Directorio : public Elemento {
             /*nada*/
         }
 
-        ~Directorio();
+        ~Directorio(){
+            delete(&contenidoDir);
+        }
 
         int tamanio() override{
             int aux = 0;
@@ -119,15 +126,17 @@ class Ruta {
     protected:
         //string name;
         string path;
-        shared_ptr<Directorio> directorio;
+        Directorio* directorio;
         
     public:
-        Ruta(shared_ptr<Directorio> _elemento){
+        Ruta(Directorio _elemento){
             //path = "/" + _elemento.nombre();
-            directorio = _elemento;
+            directorio = &_elemento;
         }
 
-        ~Ruta();
+        ~Ruta(){
+            delete(directorio);
+        };
         
         string pwd(){
             return path;
@@ -175,10 +184,33 @@ class Ruta {
             directorio->guardar(aux);
         }
 
-        void cd(string _path);
-        void ln(string _path, string _name);
-        int stat(string _path);
-        void rm(string _path);
+        void cd(string _path){
+            Directorio aux(_path);
+            this->directorio = aux;
+        }
+        
+        void ln(string _path, string _name){
+            
+            //TODO: que tamanio le damos al elemento para crearlo?
+            shared_ptr<Elemento> elemento = make_shared<Elemento>(_name, _path, 0) 
+            shared_ptr<Enlace> enlace = make_shared<Enlace>(elemento.name(), elemento);
+            this->directorio.guardar(enlace);
+
+        }
+
+        int stat(string _path){
+            Directorio* aux(_path);
+            this->directorio = aux;
+            return aux->tamanio();
+        }
+        
+        void rm(string _path){
+            //TODO: recorrer todo el vector de directorios para ver cuales coinciden con _path ???
+            
+            Directorio* aux;
+            aux = 
+            delete(aux);
+        }
 
 
 };

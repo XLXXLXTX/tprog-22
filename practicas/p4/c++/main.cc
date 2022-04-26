@@ -10,8 +10,9 @@ using namespace std;
 int main()
 {
 	Directorio	raiz("");
+	
 	Ruta		ruta(raiz);
-
+	
 	for (bool done=false; !done; )
 	{
 		cout << ruta.pwd() << "> " << flush;
@@ -94,6 +95,6 @@ int main()
 	}
 
 	cout << endl << "By!!" << endl;
-
+	
 	return 0;
 }
