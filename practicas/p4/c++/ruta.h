@@ -17,12 +17,12 @@ using namespace std;
 class Elemento {
     protected:
         string name;
-        string path;
+
         int sizeInBytes;
 
     public:
         //Constructor
-        Elemento(const string& _name, const string& _path, int _sizeInBytes) : name(_name), path(_path), sizeInBytes(_sizeInBytes){
+        Elemento(const string& _name, int _sizeInBytes) : name(_name), sizeInBytes(_sizeInBytes){
             /*nada*/
         }
 
@@ -37,7 +37,8 @@ class Elemento {
         }
 
         virtual string pathFile(){
-            return path;
+            cout << name;
+            return name;
         }
 };
 
@@ -51,12 +52,10 @@ class Directorio : public Elemento {
         //un directorio puede contenener: otros directorios, ficheros y enlaces
         vector<shared_ptr<Elemento>> contenidoDir;
     public:
-        Directorio(const string& _name): Elemento(_name, 0) {
-            /*nada*/
+        Directorio(const string& _name) : Elemento(_name, 0){
         }
 
         ~Directorio(){
-            delete(&contenidoDir);
         }
 
         int tamanio() override{
@@ -130,18 +129,17 @@ class Ruta {
         
     public:
         Ruta(Directorio _elemento){
-            //path = "/" + _elemento.nombre();
+            path = "/" + _elemento.pathFile();
             directorio = &_elemento;
         }
 
         ~Ruta(){
-            delete(directorio);
-        };
+        }
         
         string pwd(){
             return path;
         }
-
+ /*   
         string ls(){
             stringstream aux;
             for(auto& a : directorio->contenido()){
@@ -166,10 +164,10 @@ class Ruta {
                 //Debe solo poder cambiarse el tamaño si es un fichero
                 
                 //TODO: obligar a que sea fichero para poder usar el setSize()
-                /* if(a->nombre() == _name){
-                    a->setSize(_size);
-                    encontrado = true;
-                } */
+                    //if(a->nombre() == _name){
+                    //a->setSize(_size);
+                    //encontrado = true;
+                } 
             }
 
             //TODO: hacer excepcion
@@ -213,6 +211,6 @@ class Ruta {
             aux = 
             delete(aux);
         }
-
-
+        
+*/
 };

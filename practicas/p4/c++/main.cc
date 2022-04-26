@@ -12,7 +12,9 @@ int main()
 	Directorio	raiz("");
 	
 	Ruta		ruta(raiz);
-	
+
+	cout << ruta.pwd() << endl;
+	/*
 	for (bool done=false; !done; )
 	{
 		cout << ruta.pwd() << "> " << flush;
@@ -93,6 +95,7 @@ int main()
 			cerr << e.what() << endl;
 		}
 	}
+	*/
 
 	cout << endl << "By!!" << endl;
 	
