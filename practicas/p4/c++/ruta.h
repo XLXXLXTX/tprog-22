@@ -37,7 +37,6 @@ class Elemento {
         }
 
         virtual string pathFile(){
-            cout << name;
             return name;
         }
 };
@@ -94,7 +93,7 @@ class Fichero : public Elemento{
         ~Fichero();
 
         void setSize(int newValue){
-            this->sizeInBytes = newValue;
+            sizeInBytes = newValue;
         }
         
 };
@@ -126,11 +125,13 @@ class Ruta {
         //string name;
         string path;
         Directorio* directorio;
+        Directorio* raiz;
         
     public:
         Ruta(Directorio _elemento){
             path = "/" + _elemento.pathFile();
             directorio = &_elemento;
+            raiz = &_elemento;
         }
 
         ~Ruta(){
@@ -139,7 +140,7 @@ class Ruta {
         string pwd(){
             return path;
         }
- /*   
+   
         string ls(){
             stringstream aux;
             for(auto& a : directorio->contenido()){
@@ -147,7 +148,7 @@ class Ruta {
             }
             return aux.str();
         }
-
+    
         string du(){
             stringstream aux;
             for(auto& a : directorio->contenido()){
@@ -164,27 +165,48 @@ class Ruta {
                 //Debe solo poder cambiarse el tamaño si es un fichero
                 
                 //TODO: obligar a que sea fichero para poder usar el setSize()
-                    //if(a->nombre() == _name){
-                    //a->setSize(_size);
-                    //encontrado = true;
+                    if(a->nombre() == _name){
+                    a->setSize(_size);
+                    encontrado = true;
                 } 
             }
 
             //TODO: hacer excepcion
             if(!encontrado){
                 //throw fichero_inexistente()
+                shared_ptr<Fichero> aux = make_shared<Fichero>(_name, _size);
+                directorio->guardar(aux);
             }
         }
         
         void mkdir(string _name){
             //TODO: gestionar si existe ya un directorio con el mismo nombre
+            bool encontrado = false;
+            for(auto& a : directorio->contenido()){
+                
+                //TODO:gestionar con excepciones
+                //Debe solo poder cambiarse el tamaño si es un fichero
+                
+                //TODO: obligar a que sea fichero para poder usar el setSize()
+                    if(a->nombre() == _name){
+                    a->setSize(_size);
+                    encontrado = true;
+                } 
+            }
+
             shared_ptr<Directorio> aux = make_shared<Directorio>(_name); 
             directorio->guardar(aux);
         }
 
         void cd(string _path){
-            Directorio aux(_path);
-            this->directorio = aux;
+            for(auto& a : directorio->contenido()){
+                
+                    string aux = path;
+                    aux = aux + "/" + a->nombre;
+                    if(aux == _path){
+                    
+                } 
+            }
         }
         
         void ln(string _path, string _name){
