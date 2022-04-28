@@ -10,6 +10,7 @@
 
 using namespace std;
 
+
 /**
  * @brief Clase padre de Directorio, Fichero y Enlace
  * 
@@ -76,9 +77,28 @@ class Directorio : public Elemento {
             return true;
 
         }
-
+        
+        
         vector<shared_ptr<Elemento>> contenido(){
             return contenidoDir;
+        }
+
+        //Devolver solo directorios
+        vector<shared_ptr<Directorio>> getSubDirs(){
+            
+            vector<shared_ptr<Directorio>> subdirectorios;
+            
+            shared_ptr<Directorio> sub;
+
+            for(auto& a : contenidoDir){
+                sub = dynamic_cast<Directorio> (a);   //Forzar casteo de Elemento a Directorio
+                if(sub != nullptr){
+                    subdirectorios.push_back(sub);
+                    sub = nullptr;
+                }
+            }
+
+            return subdirectorios;
         }
 
 };
@@ -160,20 +180,21 @@ class Ruta {
         void vi(string _name, int _size){
             bool encontrado = false;
             for(auto& a : directorio->contenido()){
-                
-                //TODO:gestionar con excepciones
-                //Debe solo poder cambiarse el tamaño si es un fichero
-                
-                //TODO: obligar a que sea fichero para poder usar el setSize()
-                    if(a->nombre() == _name){
-                    a->setSize(_size);
-                    encontrado = true;
+                /*
+                if(a->nombre() == _name){
+                    fich = dynamic_cast<Fichero> f;   //Forzar casteo de Elemento a Directorio
+                    if(fich != null_ptr){
+                        fich->setSize(_size);         //Si se ha podido forzar a Directorio, usamos setSize()
+                        encontrado = true;            //solo esta definida en clase Fichero
+                    }else{
+                        throw fichero_no_editable();
+                    }
                 } 
+                */
             }
 
-            //TODO: hacer excepcion
+            //Si el fichero no existe, se crea uno con el nombre y tamaño que recibe la func
             if(!encontrado){
-                //throw fichero_inexistente()
                 shared_ptr<Fichero> aux = make_shared<Fichero>(_name, _size);
                 directorio->guardar(aux);
             }
@@ -182,31 +203,64 @@ class Ruta {
         void mkdir(string _name){
             //TODO: gestionar si existe ya un directorio con el mismo nombre
             bool encontrado = false;
-            for(auto& a : directorio->contenido()){
+            for(auto& a : directorio->getSubDirs()){
                 
-                //TODO:gestionar con excepciones
-                //Debe solo poder cambiarse el tamaño si es un fichero
-                
-                //TODO: obligar a que sea fichero para poder usar el setSize()
-                    if(a->nombre() == _name){
-                    a->setSize(_size);
-                    encontrado = true;
-                } 
+                if(a->nombre() == _name){
+                    throw directorio_ya_existente();
+                }
             }
 
+            //Si no existe se crea.
             shared_ptr<Directorio> aux = make_shared<Directorio>(_name); 
             directorio->guardar(aux);
         }
 
         void cd(string _path){
-            for(auto& a : directorio->contenido()){
+            
+            if(_path == ".."){
+                if(path == "/"){
+                    cerr << "no se puede ir mas atras";
+                }else{
+                    char* aux;
+                    string pathAux;
+                    directorio = raiz;
+                    //La primera iteracion para quitar / de la raiz
+                    char* dup = strdup(path.c_str());
+                    aux = strtok(dup, "/");
+                    while(aux){
+                        aux = strtok(NULL, "/");
+                        for (auto& a : directorio->getSubDirs()){
+                            if(a->nombre() == aux){
+                                directorio = a;
+                                pathAux = "/" + a->nombre();
+                            }
+                        }
+                    }
+                    path = pathAux;
+                }
+
+            }else if(_path == "."){
+
+            }else{
+                ruta = _path
+                char* aux;
+                directorio = raiz;
+                //La primera iteracion para quitar / de la raiz
                 
-                    string aux = path;
-                    aux = aux + "/" + a->nombre;
-                    if(aux == _path){
-                    
-                } 
+                char* dup = strdup(path.c_str());
+                aux = strtok(dup, "/");
+                //aux = strtok(path, "/");
+                while(aux){
+                    aux = strtok(NULL, "/");
+                    for (auto& a : directorio->contenido()){
+                        if(a->nombre() == aux){
+                            directorio = a;
+                        }
+                    }
+                }
+            
             }
+            
         }
         
         void ln(string _path, string _name){
@@ -215,13 +269,16 @@ class Ruta {
             shared_ptr<Elemento> elemento = make_shared<Elemento>(_name, _path, 0) 
             shared_ptr<Enlace> enlace = make_shared<Enlace>(elemento.name(), elemento);
             this->directorio.guardar(enlace);
-
         }
 
         int stat(string _path){
-            Directorio* aux(_path);
+            
+            // llamar a funcion cd de path - ultima parte del separador
+
+/*             Directorio* aux(_path);
             this->directorio = aux;
-            return aux->tamanio();
+            return aux->tamanio(); */
+            return 0;
         }
         
         void rm(string _path){
@@ -229,10 +286,10 @@ class Ruta {
             // _path = "/dir1/dir2/fichero1.txt"
             // / dir1 dir2 fichero.txt
             // Ruta("/")           
-            Directorio* aux;
+/*             Directorio* aux;
             aux = 
-            delete(aux);
+            delete(aux); */
         }
         
-*/
+
 };
