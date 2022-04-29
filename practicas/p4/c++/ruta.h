@@ -18,7 +18,6 @@ using namespace std;
 class Elemento {
     protected:
         string name;
-
         int sizeInBytes;
 
     public:
@@ -33,13 +32,16 @@ class Elemento {
         }
 
         //Funcion virtual para que cada clase hijo la redefina si es necesario 
-        virtual int tamanio(){
+        virtual int getTamanio(){
             return sizeInBytes;
         }
 
-        virtual string pathFile(){
-            return name;
+        virtual void setTamanio(int newValue){
+            sizeInBytes = newValue;
         }
+/*         virtual string pathFile(){
+            return name;
+        } */
 };
 
 /**
@@ -58,12 +60,16 @@ class Directorio : public Elemento {
         ~Directorio(){
         }
 
-        int tamanio() override{
+        int getTamanio() override{
             int aux = 0;
             for (auto& a : contenidoDir){
-                aux+= a->tamanio();
+                aux+= a->getTamanio();
             }
             return aux;
+        }
+
+        void setTamanio(int newValue) override {
+            throw fichero_no_editable();
         }
 
         bool guardar(shared_ptr<Elemento> elemento){
@@ -91,7 +97,7 @@ class Directorio : public Elemento {
             shared_ptr<Directorio> sub;
 
             for(auto& a : contenidoDir){
-                sub = dynamic_cast<Directorio> (a);   //Forzar casteo de Elemento a Directorio
+                sub = dynamic_pointer_cast<Directorio>(a);   //Forzar casteo de Elemento a Directorio
                 if(sub != nullptr){
                     subdirectorios.push_back(sub);
                     sub = nullptr;
@@ -111,10 +117,6 @@ class Fichero : public Elemento{
             /*nada*/
         }
         ~Fichero();
-
-        void setSize(int newValue){
-            sizeInBytes = newValue;
-        }
         
 };
 
@@ -123,14 +125,14 @@ class Enlace : public Elemento{
         shared_ptr<Elemento> elementoOriginal;
 
     public:
-        Enlace(const string& _name, shared_ptr<Elemento> _elemento) : Elemento(_name, _elemento->tamanio()){
+        Enlace(const string& _name, shared_ptr<Elemento> _elemento) : Elemento(_name, _elemento->getTamanio()){
             /*nada*/
             elementoOriginal = _elemento;
         }
         ~Enlace();
         
-        int tamanio() override{
-            return elementoOriginal->tamanio();
+        int getTamanio() override{
+            return elementoOriginal->getTamanio();
         }
         
         
@@ -144,12 +146,16 @@ class Ruta {
     protected:
         //string name;
         string path;
-        Directorio* directorio;
-        Directorio* raiz;
+/*         Directorio* raiz;
+        Directorio* directorio; */
+
+        vector<shared_ptr<Directorio>> directorio;
+        shared_ptr<Directorio> raiz;
+
         
     public:
         Ruta(Directorio _elemento){
-            path = "/" + _elemento.pathFile();
+            path = "/" + _elemento.nombre();
             directorio = &_elemento;
             raiz = &_elemento;
         }
@@ -171,26 +177,28 @@ class Ruta {
     
         string du(){
             stringstream aux;
+            
             for(auto& a : directorio->contenido()){
-                aux <<std::to_string(a->tamanio()) << " " << a->nombre() << endl;
+                aux <<std::to_string(a->getTamanio()) << " " << a->nombre() << endl;
             }
             return aux.str();
         }
 
         void vi(string _name, int _size){
             bool encontrado = false;
+            shared_ptr<Elemento> fich;
             for(auto& a : directorio->contenido()){
-                /*
+                
                 if(a->nombre() == _name){
-                    fich = dynamic_cast<Fichero> f;   //Forzar casteo de Elemento a Directorio
-                    if(fich != null_ptr){
-                        fich->setSize(_size);         //Si se ha podido forzar a Directorio, usamos setSize()
+                    fich = dynamic_pointer_cast<Fichero>(a);   //Forzar casteo de Elemento a Directorio
+                    if(fich != NULL){
+                        fich->setTamanio(_size);         //Si se ha podido forzar a Directorio, usamos setSize()
                         encontrado = true;            //solo esta definida en clase Fichero
                     }else{
                         throw fichero_no_editable();
                     }
                 } 
-                */
+                
             }
 
             //Si el fichero no existe, se crea uno con el nombre y tamaño que recibe la func
@@ -217,7 +225,7 @@ class Ruta {
 
         void cd(string _path){
             
-            if(_path == ".."){
+/*             if(_path == ".."){
                 if(path == "/"){
                     cerr << "no se puede ir mas atras";
                 }else{
@@ -242,7 +250,7 @@ class Ruta {
             }else if(_path == "."){
 
             }else{
-                ruta = _path
+                ruta = _path;
                 char* aux;
                 directorio = raiz;
                 //La primera iteracion para quitar / de la raiz
@@ -259,16 +267,16 @@ class Ruta {
                     }
                 }
             
-            }
+            } */
             
         }
         
         void ln(string _path, string _name){
             
-            //TODO: que tamanio le damos al elemento para crearlo?
+/*             //TODO: que tamanio le damos al elemento para crearlo?
             shared_ptr<Elemento> elemento = make_shared<Elemento>(_name, _path, 0) 
             shared_ptr<Enlace> enlace = make_shared<Enlace>(elemento.name(), elemento);
-            this->directorio.guardar(enlace);
+            this->directorio.guardar(enlace); */
         }
 
         int stat(string _path){
