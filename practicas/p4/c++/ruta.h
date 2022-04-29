@@ -149,8 +149,8 @@ class Ruta {
 /*         Directorio* raiz;
         Directorio* directorio; */
 
-        vector<shared_ptr<Directorio>> directorio;
-        shared_ptr<Directorio> raiz;
+        Directorio* directorio;
+        Directorio* raiz;
 
         
     public:
@@ -225,7 +225,7 @@ class Ruta {
 
         void cd(string _path){
             
-/*             if(_path == ".."){
+             if(_path == ".."){
                 if(path == "/"){
                     cerr << "no se puede ir mas atras";
                 }else{
@@ -239,7 +239,7 @@ class Ruta {
                         aux = strtok(NULL, "/");
                         for (auto& a : directorio->getSubDirs()){
                             if(a->nombre() == aux){
-                                directorio = a;
+                                //directorio = a;
                                 pathAux = "/" + a->nombre();
                             }
                         }
@@ -250,7 +250,7 @@ class Ruta {
             }else if(_path == "."){
 
             }else{
-                ruta = _path;
+                path = _path;
                 char* aux;
                 directorio = raiz;
                 //La primera iteracion para quitar / de la raiz
@@ -262,30 +262,30 @@ class Ruta {
                     aux = strtok(NULL, "/");
                     for (auto& a : directorio->contenido()){
                         if(a->nombre() == aux){
-                            directorio = a;
+                            //directorio = a;
                         }
                     }
                 }
             
-            } */
+            } 
             
         }
-        
+        /*
         void ln(string _path, string _name){
             
 /*             //TODO: que tamanio le damos al elemento para crearlo?
             shared_ptr<Elemento> elemento = make_shared<Elemento>(_name, _path, 0) 
             shared_ptr<Enlace> enlace = make_shared<Enlace>(elemento.name(), elemento);
-            this->directorio.guardar(enlace); */
+            this->directorio.guardar(enlace); 
         }
-
+    /*
         int stat(string _path){
             
             // llamar a funcion cd de path - ultima parte del separador
 
 /*             Directorio* aux(_path);
             this->directorio = aux;
-            return aux->tamanio(); */
+            return aux->tamanio(); 
             return 0;
         }
         
@@ -296,8 +296,8 @@ class Ruta {
             // Ruta("/")           
 /*             Directorio* aux;
             aux = 
-            delete(aux); */
+            delete(aux); 
         }
         
-
+*/
 };
