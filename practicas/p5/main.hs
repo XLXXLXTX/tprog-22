@@ -84,6 +84,6 @@ rule_curva_de_Hilbert x = if x =='f' then "-g>+f>f+>g-"
                           else [x]
 
 rule_curva_de_Gosper :: Char -> String
-rule_curva_de_Gosper x = if x =='F' then "F-G--G+F++FF+G"
+rule_curva_de_Gosper x = if x =='F' then "F-G--G+F++FF+G-"
                          else if x == 'G' then "+F-GG--G-F++F+G"
                          else [x]
