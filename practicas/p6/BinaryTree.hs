@@ -63,12 +63,22 @@ buildAux (x:[]) a = add a x --Warning ? Pattern match is redundant
 -------------------------------------------------------------------------
 
 --ACABAR
-{--
+
 buildBalanced :: Ord a => [a] -> Tree a
 build [] = Empty --Arbol vacio porque es lista vacia
 build [a] = Leaf a --Arbol de un solo elemento
-build a = 
---}
+build a = Node (media) (buildBalanced lc) (buildBalanced rc)
+  where
+    long = length a
+    media = aux (sort a) long
+    aux :: [a] -> Int -> a
+    aux a long = snd(splitAt(long 'div' 2) a) !! 0
+    lc = fst(splitAt(long 'div' 2) a)
+    rc =  Data.List.delete media rcaux
+    rcaux = snd(splitAt(long 'div' 2) a)
+
+
+
 
 -------------------------------------------------------------------------
 --Recorridos de arboles binarios
@@ -91,10 +101,12 @@ inorder (Leaf a) = [a]
 inorder (Node x lc rc) = inorder lc ++ [x] ++ inorder rc
 
 --ACABAR
-{--
+
 balance :: Ord a => Tree a -> Tree a
-balanceBalance 
---}
+balance a = buildBalanced (balanceAux a)
+  where
+    balanceAux :: Ord a => Tree a -> [a]
+    balanceAux a = inorder a
 
 -------------------------------------------------------------------------
 --Busquedas
