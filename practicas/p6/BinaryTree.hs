@@ -4,7 +4,7 @@ import Data.List --importing Data. List module to be able to use sort function
 data Tree t = Empty | Leaf t | Node t ( Tree t ) ( Tree t )
 
 instance (Show t) => Show (Tree t)  where
-  show ( Empty ) = ""
+  show ( Empty ) = "<>"
   show ( Leaf t) = " "++(show t)
   show ( Node x lc rc) = (show x)++"\n |-"++(show lc)++"\n |-"++(show rc)
 
