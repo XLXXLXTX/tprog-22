@@ -6,7 +6,7 @@ data Tree t = Empty | Leaf t | Node t ( Tree t ) ( Tree t )
 instance (Show t) => Show (Tree t)  where
   show ( Empty ) = ""
   show ( Leaf t) = " "++(show t)
-  show ( Node x lc rc) = (show x)++"/n |-"++(show lc)++"/n |-"++(show rc)
+  show ( Node x lc rc) = (show x)++"\n |-"++(show lc)++"\n |-"++(show rc)
 
 -------------------------------------------------------------------------
 --Arboles binarios de busqueda
@@ -42,7 +42,7 @@ add :: Ord a => Tree a -> a -> Tree a
 add Empty a = Leaf a --Arbol vacio + elemento = Hoja 
 add (Leaf a) b  --Arbol con hoja: Caso de insertar en subarbol izq o der
     | b <= a = Node a (Leaf b) (Empty)
-    | b > b  = Node a (Empty) (Leaf b)
+    | b > a  = Node a (Empty) (Leaf b)
 add (Node x lc rc) b
     | b <= x = Node x (add lc b) rc --Si menor que la raiz, llamada recursiva en add del arbol inicial
     | b > x = Node x lc (add rc b)  --Si mayor que la raiz, ...
@@ -55,8 +55,8 @@ build a = buildAux a Empty
 
 
 buildAux :: Ord a => [a] -> Tree a -> Tree a 
-buildAux (x:xs) a = buildAux xs (add a x) 
-buildAux (x:[]) a = add a x --Warning ? Pattern match is redundant
+buildAux (x:xs) a = if (xs == []) then add a x 
+                    else buildAux xs (add a x) 
 
 -------------------------------------------------------------------------
 --Arboles binarios equilibrados
@@ -65,17 +65,17 @@ buildAux (x:[]) a = add a x --Warning ? Pattern match is redundant
 --ACABAR
 
 buildBalanced :: Ord a => [a] -> Tree a
-build [] = Empty --Arbol vacio porque es lista vacia
-build [a] = Leaf a --Arbol de un solo elemento
-build a = Node (media) (buildBalanced lc) (buildBalanced rc)
+buildBalanced [] = Empty --Arbol vacio porque es lista vacia
+buildBalanced [a] = Leaf a --Arbol de un solo elemento
+buildBalanced a = Node (media) (buildBalanced lc) (buildBalanced rc)
   where
     long = length a
     media = aux (sort a) long
     aux :: [a] -> Int -> a
-    aux a long = snd(splitAt(long 'div' 2) a) !! 0
-    lc = fst(splitAt(long 'div' 2) a)
+    aux a long = snd(splitAt(long `div` 2) a) !! 0
+    lc = fst(splitAt(long `div` 2) a)
     rc =  Data.List.delete media rcaux
-    rcaux = snd(splitAt(long 'div' 2) a)
+    rcaux = snd(splitAt(long `div` 2) a)
 
 
 
